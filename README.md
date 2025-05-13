@@ -250,7 +250,7 @@ Despite using a backbone that is 3× smaller and being trained on only 1% of SA-
 <td align="center">68.2</td>
 </tr>
 <tr><td align="center">UnSAM (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/10iPpraRoWE58mHPiv8Q1alsBekAQOxM9/view?usp=drive_link">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/11Lj11XW8dxK_21LKi4uLp2R2zz-FWe3b/view?usp=drive_link">download</a></td>
 <td align="center">Swin-Tiny (25M)</td>
 <td align="center">0.1M</td>
 <td align="center">40.3</td>
