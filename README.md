@@ -8,7 +8,7 @@ Unsupervised SAM (UnSAM) is a "segment anything" model for promptable and automa
 
 
 > [**Segment Anything without Supervision**](http://arxiv.org/abs/2406.20081)            
-> [XuDong Wang](https://frank-xwang.github.io/), [Jingfeng Yang](), [Trevor Darrell](https://people.eecs.berkeley.edu/~trevor/)      
+> [XuDong Wang](https://frank-xwang.github.io/), [Jingfeng Yang](https://jingfeng0705.github.io/), [Trevor Darrell](https://people.eecs.berkeley.edu/~trevor/)      
 > UC Berkeley            
 > NeurIPS 2024            
 
@@ -230,7 +230,7 @@ ground truth masks and our unsupervised labels. This demonstrates that the super
 </tbody></table>
 
 #### Promptable image segmentation
-Despite using a backbone that is 3× smaller and being trained on only 1% of SA-1B, our lightly semi-supervised UnSAM+ surpasses the fully-supervised SAM in promptable segmentation task on COCO.
+Despite using a backbone that is 3× smaller and being trained on only 1% of SA-1B, our lightly semi-supervised UnSAM+ surpasses the fully-supervised SAM in promptable segmentation task on COCO. Please uncomment `SCALAR_DIM: 128` in the [config](promptable_segmentation/configs/semantic_sam_only_sa-1b_swinT.yaml) if you are using UnSAM instead of UnSAM+ checkpoint.
 <table><tbody>
 <!-- START TABLE -->
 <!-- TABLE HEADER -->

@@ -18,6 +18,7 @@ LOADER:
   KEY_DATASET: 'coco'
 # model
 MODEL:
+  # SCALAR_DIM: 128  # PLEASAE UNCOMMENT THIS LINE if you are evaluting the UnSAM instead of UnSAM+ checkpoint 
   NAME: interactive_mask_dino
   HEAD: general_head
   MASK_ON: false

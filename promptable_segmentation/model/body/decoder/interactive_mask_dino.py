@@ -19,6 +19,7 @@ from semantic_sam.body.decoder.registry import register_decoder
 from .utils.dino_decoder import TransformerDecoder, DeformableTransformerDecoderLayer
 from .utils import MLP, gen_encoder_output_proposals, inverse_sigmoid
 from ...utils import box_ops
+import numpy as np
 from ...utils import configurable
 
 class IMaskDINODecoder(nn.Module):
@@ -55,6 +56,7 @@ class IMaskDINODecoder(nn.Module):
             dec_layer_share: bool = False,
             semantic_ce_loss: bool = False,
             num_mask_tokens: int = 3,
+            scalar_dim: int = 0,
     ):
         """
         NOTE: this interface is experimental.
@@ -143,6 +145,7 @@ class IMaskDINODecoder(nn.Module):
                                           d_model=hidden_dim, query_dim=query_dim,
                                           num_feature_levels=self.num_feature_levels,
                                           dec_layer_share=dec_layer_share,
+                                          scalar_dim=scalar_dim,
                                           )
 
         self.hidden_dim = hidden_dim
@@ -206,6 +209,9 @@ class IMaskDINODecoder(nn.Module):
         ret["total_num_feature_levels"] = dec_cfg['TOTAL_NUM_FEATURE_LEVELS']
         ret["num_mask_tokens"] = dec_cfg.get('NUM_INTERACTIVE_TOKENS', 3)
         ret["semantic_ce_loss"] = dec_cfg['TEST']['SEMANTIC_ON'] and dec_cfg['SEMANTIC_CE_LOSS'] and not dec_cfg['TEST']['PANOPTIC_ON']
+
+        # get scalar dimension from the config
+        ret["scalar_dim"] = cfg['MODEL'].get('SCALAR_DIM', 0)
 
         return ret
 
@@ -348,6 +354,15 @@ class IMaskDINODecoder(nn.Module):
             """
         scalar, noise_scale = self.dn_num, self.noise_scale
 
+        cxcywh = targets[0]['boxes_before_normalize']
+        image_height = targets[0]['image_height']
+        image_width = targets[0]['image_width']
+        w_per_gt = [t[2] for t in cxcywh]
+        h_per_gt = [t[3] for t in cxcywh]
+        diagonals = [torch.sqrt(h**2 + w**2) for w, h in zip(w_per_gt, h_per_gt)]
+        image_diagonal = np.sqrt(image_height**2 + image_width**2)
+        hierarchy_scalar = torch.stack([diag/image_diagonal for diag in diagonals])
+        hierarchy_scalar = hierarchy_scalar.unsqueeze(0).unsqueeze(2)
 
         pb_labels = torch.stack([t['pb'] for t in targets])
         # FIXME this is for future content-based interaction; pool content features as label embedding
@@ -358,11 +373,14 @@ class IMaskDINODecoder(nn.Module):
 
         known_labels = labels
         known_pb_labels = pb_labels
+        known_hier_scalar = hierarchy_scalar
 
         known_bboxs = boxes
         known_labels_expaned = known_labels.clone()
         known_pb_labels_expaned = known_pb_labels.clone()
         known_bbox_expand = known_bboxs.clone()
+        known_hier_scalar_expand = known_hier_scalar.clone()
+
         if noise_scale > 0 and self.training:
             diff = torch.zeros_like(known_bbox_expand)
             diff[:, :, :2] = known_bbox_expand[:, :, 2:] / 2
@@ -379,9 +397,11 @@ class IMaskDINODecoder(nn.Module):
         m_pb = known_pb_labels_expaned.long().to('cuda')
         input_label_embed = self.label_enc(m)+self.pb_embedding(m_pb)
         input_bbox_embed = inverse_sigmoid(known_bbox_expand)
+        input_hier_scalar_embed = known_hier_scalar_expand
 
         input_label_embed = input_label_embed.repeat_interleave(self.num_all_tokens,1) + self.mask_tokens.weight.unsqueeze(0).repeat(input_label_embed.shape[0], input_label_embed.shape[1], 1)
         input_bbox_embed = input_bbox_embed.repeat_interleave(self.num_all_tokens,1)
+        input_hier_scalar_embed = input_hier_scalar_embed.repeat_interleave(self.num_all_tokens,1)
 
         single_pad = self.num_all_tokens
 
@@ -393,6 +413,7 @@ class IMaskDINODecoder(nn.Module):
         if input_label_embed.shape[1]>0:
             input_query_label = input_label_embed
             input_query_bbox = input_bbox_embed
+            input_query_hier_scalar = input_hier_scalar_embed
 
         tgt_size = pad_size
         attn_mask = torch.ones(tgt_size, tgt_size).to('cuda') < 0
@@ -415,7 +436,7 @@ class IMaskDINODecoder(nn.Module):
         }
 
 
-        return input_query_label,input_query_bbox,attn_mask,mask_dict
+        return input_query_label,input_query_bbox,input_query_hier_scalar,attn_mask,mask_dict
 
     def prepare_for_dn_mo_infer(self, targets, tgt, refpoint_emb, batch_size):
 
@@ -542,8 +563,8 @@ class IMaskDINODecoder(nn.Module):
                 input_query_label, input_query_bbox, tgt_mask, mask_dict = \
                     self.prepare_for_dn_mo_infer(targets, None, None, x[0].shape[0])
             else:
-                input_query_label, input_query_bbox, tgt_mask, mask_dict = \
-                    self.prepare_for_dn_mo(targets, None, None, x[0].shape[0])
+                input_query_label, input_query_bbox, input_query_hier_scalar, tgt_mask, mask_dict = \
+                    self.prepare_for_dn_mo(targets, None, None, x[0].shape[0]) # input_query_label, input_query_bbox, input_query_hier_scalar, tgt_mask, mask_dict = \
             tgt=input_query_label
             refpoint_embed=input_query_bbox
             if tgt is None:
@@ -551,6 +572,7 @@ class IMaskDINODecoder(nn.Module):
                 refpoint_embed = torch.zeros(bs, self.num_queries, 4).cuda()
 
         hs, references = self.decoder(
+            hier_scalar=input_query_hier_scalar.transpose(0, 1),
             tgt=tgt.transpose(0, 1),
             memory=src_flatten.transpose(0, 1),
             memory_key_padding_mask=mask_flatten,

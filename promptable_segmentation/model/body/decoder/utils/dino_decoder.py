@@ -13,6 +13,22 @@ from torch.cuda.amp import autocast
 
 from semantic_sam.body.decoder.utils.utils import MLP, _get_clones, _get_activation_fn, gen_sineembed_for_position, inverse_sigmoid
 from ...encoder.ops.modules import MSDeformAttn
+import math
+
+
+
+def gen_sineembed_for_scalar(scalar_tensor, dim=128):
+    """
+    Generate sine embedding for scalar tensor.
+    """
+    scale = 2 * math.pi
+    dim_t = torch.arange(dim, dtype=torch.float32, device=scalar_tensor.device)
+    dim_t = 10000 ** (2 * (dim_t // 2) / dim)
+    x_embed = scalar_tensor[:, :, 0] * scale
+    pos_x = x_embed[:, :, None] / dim_t
+    pos_x = torch.stack((pos_x[:, :, 0::2].sin(), pos_x[:, :, 1::2].cos()), dim=3).flatten(2)
+    return pos_x
+
 
 
 class TransformerDecoder(nn.Module):
@@ -29,6 +45,7 @@ class TransformerDecoder(nn.Module):
                  dec_layer_share=False,
                  dec_layer_dropout_prob=None,
                  task_switch=None,
+                 scalar_dim=0
                  ):
         super().__init__()
         if num_layers > 0:
@@ -43,7 +60,8 @@ class TransformerDecoder(nn.Module):
         assert query_dim in [2, 4], "query_dim should be 2/4 but {}".format(query_dim)
         self.num_feature_levels = num_feature_levels
 
-        self.ref_point_head = MLP(query_dim // 2 * d_model, d_model, d_model, 2)
+        self.scalar_dim = scalar_dim
+        self.ref_point_head = MLP(query_dim // 2 * d_model + self.scalar_dim, d_model, d_model, 2)
         if not deformable_decoder:
             self.query_pos_sine_scale = MLP(d_model, d_model, d_model, 2)
         else:
@@ -93,7 +111,7 @@ class TransformerDecoder(nn.Module):
             if isinstance(m, MSDeformAttn):
                 m._reset_parameters()
 
-    def forward(self, tgt, memory,
+    def forward(self, hier_scalar, tgt, memory,
                 tgt_mask: Optional[Tensor] = None,
                 memory_mask: Optional[Tensor] = None,
                 tgt_key_padding_mask: Optional[Tensor] = None,
@@ -133,6 +151,10 @@ class TransformerDecoder(nn.Module):
             reference_points_input = reference_points[:, :, None] \
                                          * torch.cat([valid_ratios, valid_ratios], -1)[None, :]  # nq, bs, nlevel, 4
             query_sine_embed = gen_sineembed_for_position(reference_points_input[:, :, 0, :], dim=output.shape[-1]//2) # nq, bs, 256*2
+
+            if self.scalar_dim > 0:
+                query_scalar_sine_embed = gen_sineembed_for_scalar(hier_scalar, dim=128)
+                query_sine_embed = torch.cat([query_sine_embed, query_scalar_sine_embed], dim=-1)
 
             raw_query_pos = self.ref_point_head(query_sine_embed)  # nq, bs, 256
             pos_scale = self.query_scale(output) if self.query_scale is not None else 1
