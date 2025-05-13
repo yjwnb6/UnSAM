@@ -230,7 +230,7 @@ ground truth masks and our unsupervised labels. This demonstrates that the super
 </tbody></table>
 
 #### Promptable image segmentation
-Despite using a backbone that is 3× smaller and being trained on only 1% of SA-1B, our lightly semi-supervised UnSAM+ surpasses the fully-supervised SAM in promptable segmentation task on COCO. Please uncomment `SCALAR_DIM: 128` in the [config](promptable_segmentation/configs/semantic_sam_only_sa-1b_swinT.yaml) if you are using UnSAM instead of UnSAM+ checkpoint.
+Despite using a backbone that is 3× smaller and being trained on only 1% of SA-1B, our lightly semi-supervised UnSAM+ surpasses the fully-supervised SAM in promptable segmentation task on COCO.
 <table><tbody>
 <!-- START TABLE -->
 <!-- TABLE HEADER -->
@@ -250,11 +250,11 @@ Despite using a backbone that is 3× smaller and being trained on only 1% of SA-
 <td align="center">68.2</td>
 </tr>
 <tr><td align="center">UnSAM (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/11Lj11XW8dxK_21LKi4uLp2R2zz-FWe3b/view?usp=drive_link">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/1Vow8k0pGWcMRba0z48KJEBXZtJxK96K_/view?usp=drive_link">download</a></td>
 <td align="center">Swin-Tiny (25M)</td>
 <td align="center">0.1M</td>
-<td align="center">40.3</td>
-<td align="center">59.5</td>
+<td align="center">40.6</td>
+<td align="center">—</td>
 </tr>
 <tr><td align="center">UnSAM+ (ours)</td>
 <td valign="center"><a href="https://drive.google.com/file/d/12Z2pOASXEEMGz5-Svn1Fe7MNX41JkhHD/view?usp=sharing">download</a></td>

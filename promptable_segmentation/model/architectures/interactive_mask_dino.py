@@ -522,15 +522,12 @@ class GeneralizedMaskDINO(nn.Module):
                         print("max number of levels ", max(num_tgt))
                     # print("max number of levels ", max(num_tgt))
             new_target={
-                    "image_height": h,
-                    "image_width": w,
                     "ori_mask_num": len(targets_per_image.gt_classes),
                     "level_target_inds": level_target_inds,
                     "max_num_tgt_per_click": max_num_tgt_per_click,
                     "labels": targets_per_image.gt_classes[index] if prediction_switch['whole'] else None,
                     "masks": padded_masks[index],
                     "ori_masks": padded_masks,
-                    "boxes_before_normalize": box_ops.box_xyxy_to_cxcywh(gt_boxes[index]),
                     "boxes":box_ops.box_xyxy_to_cxcywh(gt_boxes[index])/image_size_xyxy,
                     "ori_boxes":box_ops.box_xyxy_to_cxcywh(gt_boxes)/image_size_xyxy,
                     "points":box_ops.box_xyxy_to_cxcywh(point_coords)/image_size_xyxy,
