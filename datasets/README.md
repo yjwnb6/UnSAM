@@ -1,6 +1,26 @@
 # Preparing Dataset
 ## Preparing Training Dataset
-We transfer our training pseudo labels to tsv format for faster dataloading. Please set the environment variable
+
+To generate psuedo-masks for your datasets, please follow our `divide_and_conquer' stage, which generates pseudo-masks for all images in your dataset with unsupervised learning methods. Please run the script `divide_and_conquer/generate_pseudo_masks.sh' — it handles the entire pseudo-mask generation process and will save all the masks produced by our unsupervised labeling pipeline. You can choose to only generate pseudo-masks for a subset of your TRAIN_DATSETS via specifying the start-id and end-id.
+
+Note that this script expects the following data structure:
+
+```
+UNLABELED_IMAGES/
+  FOLDER1/
+    Image1
+    .......
+    Imagen
+  FOLDER2/
+    Image1
+    .......
+    Imagen
+  .......
+```
+
+We transfer our training pseudo labels to tsv format for faster dataloading. Please refer to [Semantic-SAM](https://github.com/UX-Decoder/Semantic-SAM/blob/main/DATASET.md) for a detailed script to transform json format data to tsv format data.
+
+Please set the environment variable
 ```shell
 export TRAIN_DATASETS=path_to_your_tsv_directory
 ```
@@ -15,7 +35,6 @@ $TRAIN_DATASETS/
   SAM-N.tsv
   SAM-N.lineidx
 ```
-Please refer to [Semantic-SAM](https://github.com/UX-Decoder/Semantic-SAM/blob/main/DATASET.md) for a detailed script to transform json format data to tsv format data
 
 ## Preparing Evaluation Dataset (Whole-Image-Segmentation)
 By default we support 7 evaluation datasets for whole-image-segmentation evaluation: SA-1B, COCO, LVIS, ADE20K, EntitySeg, PartImagenet, and PACO.
