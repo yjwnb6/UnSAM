@@ -250,11 +250,18 @@ Despite using a backbone that is 3× smaller and being trained on only 1% of SA-
 <td align="center">68.2</td>
 </tr>
 <tr><td align="center">UnSAM (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/1Vow8k0pGWcMRba0z48KJEBXZtJxK96K_/view?usp=drive_link">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/18IilJNw170sKsKBhyIvjfUZ7cZwKyBx7/view?usp=drive_link">download</a></td>
 <td align="center">Swin-Tiny (25M)</td>
 <td align="center">0.1M</td>
-<td align="center">40.6</td>
-<td align="center">—</td>
+<td align="center">37.6</td>
+<td align="center">57.9</td>
+</tr>
+<tr><td align="center">UnSAM (ours)</td>
+<td valign="center"><a href="https://drive.google.com/file/d/1x5tXWV-HKwQ8dJRjbPPweuHEgsJxN0JF/view?usp=drive_link">download</a></td>
+<td align="center">Swin-Tiny (25M)</td>
+<td align="center">0.4M</td>
+<td align="center">41.3</td>
+<td align="center">59.1</td>
 </tr>
 <tr><td align="center">UnSAM+ (ours)</td>
 <td valign="center"><a href="https://drive.google.com/file/d/12Z2pOASXEEMGz5-Svn1Fe7MNX41JkhHD/view?usp=sharing">download</a></td>
