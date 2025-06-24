@@ -168,7 +168,7 @@ including COCO, LVIS, ADE20K, Entity, SA-1B, Part-ImageNet and PACO.
 <td align="center">27.5</td>
 </tr>
 <tr><td align="center">UnSAM (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/1qUdZ2ELU_5SNTsmx3Q0wSA87u4SebiO4/view?usp=drive_link">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/12DvjnXIQsOtBSAAEicd9uhW0TCpnMFyZ/view?usp=sharing">download</a></td>
 <td valign="center">ResNet50</th>
 <td align="center">0.4M</td>
 <td align="center">41.1</td>
@@ -215,7 +215,7 @@ ground truth masks and our unsupervised labels. This demonstrates that the super
 <td align="center">18.1</td>
 </tr>
 <tr><td align="center">UnSAM+ (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/1sCZM5j2pQr34-scSEkgG7VmUaHJc8n4d/view?usp=drive_link">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/1MaCoMLIR6-baaP7p_WriZVhuJoozxTn8/view?usp=sharing">download</a></td>
 <td valign="center">ResNet50</td>
 <td align="center">0.1M</td>
 <td align="center">48.8</td>
@@ -264,7 +264,7 @@ Despite using a backbone that is 3× smaller and being trained on only 1% of SA-
 <td align="center">59.1</td>
 </tr>
 <tr><td align="center">UnSAM+ (ours)</td>
-<td valign="center"><a href="https://drive.google.com/file/d/12Z2pOASXEEMGz5-Svn1Fe7MNX41JkhHD/view?usp=sharing">download</a></td>
+<td valign="center"><a href="https://drive.google.com/file/d/1M3lOnSOutQRK4IqBkc3e4vGZ-u2oTkeW/view?usp=sharing">download</a></td>
 <td align="center">Swin-Tiny (25M)</td>
 <td align="center">0.1M</td>
 <td align="center">52.4</td>
