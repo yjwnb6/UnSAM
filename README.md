@@ -40,7 +40,7 @@ Our Divide-and-Conquer approach can be used to provide multi-granular masks with
 
 ### Divide-and-Conquer Demo
 
-Try out the demo using Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/11K2mHhISA7RYY8pKgyeyHO9gnExn-EXl/view?usp=sharing)
+Try out the demo using Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11K2mHhISA7RYY8pKgyeyHO9gnExn-EXl)
 
 If you want to run Divide-and-Conquer locally, we provide `demo_dico.py` that is able to visualize the pseudo-masks.
 Please download the CutLER's checkpoint from [here](http://dl.fbaipublicfiles.com/cutler/checkpoints/cutler_cascade_final.pth), and then run it with:
@@ -63,7 +63,7 @@ We give a few demo images in docs/demos/. Following, we give some visualizations
 ### 2. Segment Anything without Supervision
 
 ### Inference Demo for UnSAM with Pre-trained Models (whole image segmentation)
-Try out the UnSAM demo using Colab (no GPU needed): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1ZHdql8SVHYqQG0BSkpgCPYkfWdiLeor6/view?usp=sharing)
+Try out the UnSAM demo using Colab (no GPU needed): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZHdql8SVHYqQG0BSkpgCPYkfWdiLeor6)
 
 If you want to run UnSAM or UnSAM+ demos locally, we provide `demo_whole_image.py` that is able to demo builtin configs. 
 Please download UnSAM/UnSAM+'s checkpoints from the [model zoo](#model-zoo). 
