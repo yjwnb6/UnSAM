@@ -17,6 +17,7 @@ Unsupervised SAM (UnSAM) is a "segment anything" model for promptable and automa
 
 ## Updates
 - 07/01/2024 Initial commit
+- 10/29/2025 Add Hugging Face support for whole image segmentation [[HF Link](https://huggingface.co/yujunwei04/unsam-whole-image-segmentation)], [[Tutorial Notebook](whole_image_segmentation/hf_demo_whole_image.ipynb)]
 
 
 ## Features
